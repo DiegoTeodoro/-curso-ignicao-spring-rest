@@ -1,21 +1,26 @@
-package com.algaworks.algatransito;
+package com.algaworks.algatransito.api.controller;
 
 import com.algaworks.algatransito.domain.model.Proprietario;
 import com.algaworks.algatransito.domain.repository.ProprietarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.algaworks.algatransito.domain.service.RegistroProprietarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/proprietarios")
 public class ProprietarioController {
 
-    @Autowired
-    private ProprietarioRepository proprietarioRepository;
+    private final RegistroProprietarioService registroProprietarioService;
+    private final ProprietarioRepository proprietarioRepository;
+
+    public ProprietarioController(RegistroProprietarioService registroProprietarioService, ProprietarioRepository proprietarioRepository) {
+        this.registroProprietarioService = registroProprietarioService;
+        this.proprietarioRepository = proprietarioRepository;
+    }
 
     @GetMapping
     public List<Proprietario> listar() {
@@ -23,16 +28,16 @@ public class ProprietarioController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Proprietario> bucarPorId(@PathVariable Long id) {
-        Optional<Proprietario> proprietario = proprietarioRepository.findById(id);
-        return proprietario.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Proprietario> buscar(@PathVariable Long id) {
+        return proprietarioRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping // 201
-    public ResponseEntity<Proprietario> adicionar(@RequestBody Proprietario proprietario) {
-        Proprietario salvo = proprietarioRepository.save(proprietario);
-        return new ResponseEntity<>(salvo, HttpStatus.CREATED);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Proprietario adicionar(@RequestBody Proprietario proprietario) {
+        return proprietarioRepository.save(proprietario);
     }
 
     @PutMapping("/{id}")
@@ -41,6 +46,7 @@ public class ProprietarioController {
         if (!proprietarioRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+
         proprietario.setId(id);
         Proprietario proprietarioAtualizado = proprietarioRepository.save(proprietario);
 
@@ -48,13 +54,12 @@ public class ProprietarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> remover(@PathVariable Long id){
-        if(!proprietarioRepository.existsById(id)){
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        if (!proprietarioRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+
         proprietarioRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 }
-
