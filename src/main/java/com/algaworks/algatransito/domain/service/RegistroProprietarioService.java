@@ -16,6 +16,11 @@ public class RegistroProprietarioService {
         this.proprietarioRepository = proprietarioRepository;
     }
 
+    public Proprietario buscar(Long id){
+        return proprietarioRepository.findById(id)
+                .orElseThrow(() -> new NegocioException("Proprietario não encontrado"));
+    }
+
     @Transactional // Esse metodo deve ser executado dentro de uma transação.
     public Proprietario salvar(Proprietario proprietario){
         boolean emailEmUso = proprietarioRepository.findByEmail(proprietario.getEmail())

@@ -5,7 +5,6 @@ import com.algaworks.algatransito.domain.model.Proprietario;
 import com.algaworks.algatransito.domain.repository.ProprietarioRepository;
 import com.algaworks.algatransito.domain.service.RegistroProprietarioService;
 import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +65,7 @@ public class ProprietarioController {
         return ResponseEntity.noContent().build();
     }
 
+    //Exception Handler e captura e trata as exceções
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<String> capturar(NegocioException e){
         return ResponseEntity.badRequest().body(e.getMessage());

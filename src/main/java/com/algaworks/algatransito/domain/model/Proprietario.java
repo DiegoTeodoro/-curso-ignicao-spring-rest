@@ -1,9 +1,11 @@
 package com.algaworks.algatransito.domain.model;
 
 
+import com.algaworks.algatransito.domain.validation.ValidationGroups;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
@@ -16,6 +18,7 @@ public class Proprietario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull(groups = ValidationGroups.ProprietarioId.class)
     private Long id;
 
     @NotBlank
