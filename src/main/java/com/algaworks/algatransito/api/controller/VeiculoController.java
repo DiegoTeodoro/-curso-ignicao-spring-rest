@@ -1,11 +1,13 @@
 package com.algaworks.algatransito.api.controller;
 
+import com.algaworks.algatransito.api.assembler.VeiculoAssembler;
+import com.algaworks.algatransito.api.model.VeiculoModel;
 import com.algaworks.algatransito.domain.exception.NegocioException;
 import com.algaworks.algatransito.domain.model.Veiculo;
 import com.algaworks.algatransito.domain.repository.VeiculoRepository;
 import com.algaworks.algatransito.domain.service.RegistroVeiculoService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,28 +21,31 @@ public class VeiculoController {
 
     private final VeiculoRepository veiculoRepository;
     private final RegistroVeiculoService registroVeiculoService;
+    private final VeiculoAssembler veiculoAssembler;
 
-    public VeiculoController(VeiculoRepository veiculoRepository, RegistroVeiculoService registroVeiculoService) {
+    public VeiculoController(VeiculoRepository veiculoRepository, RegistroVeiculoService registroVeiculoService, ModelMapper modelMapper, VeiculoAssembler veiculoAssembler) {
         this.veiculoRepository = veiculoRepository;
         this.registroVeiculoService = registroVeiculoService;
+        this.veiculoAssembler = veiculoAssembler;
     }
 
     @GetMapping
-    public List<Veiculo> listar(){
-        return veiculoRepository.findAll();
+    public List<VeiculoModel> listar(){
+        return veiculoAssembler.toCollectionModel(veiculoRepository.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Veiculo> buscar(@PathVariable Long id){
+    public ResponseEntity<VeiculoModel> buscar(@PathVariable Long id){
         return veiculoRepository.findById(id)
+                .map(veiculoAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Veiculo cadastrar(@Valid @RequestBody Veiculo veiculo){
-        return registroVeiculoService.cadastrar(veiculo);
+    public VeiculoModel cadastrar(@Valid @RequestBody Veiculo veiculo){
+        return veiculoAssembler.toModel(registroVeiculoService.cadastrar(veiculo));
     }
 
     //Exception Handler e captura e trata as exceções

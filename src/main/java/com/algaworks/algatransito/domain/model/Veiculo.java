@@ -11,6 +11,7 @@ import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
@@ -42,17 +43,19 @@ public class Veiculo {
     private StatusVeiculo status;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dataCadastro;
+    private OffsetDateTime dataCadastro;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dataApreensao;
+    private OffsetDateTime dataApreensao;
 
     public Veiculo() {
     }
 
-    public Veiculo(Long id, Proprietario proprietario, String marca, String modelo,
-                   String placa, StatusVeiculo status, LocalDateTime dataCadastro,
-                   LocalDateTime dataApreensao) {
+    public Veiculo(Long id, Proprietario proprietario, String marca,
+                   String modelo, String placa,
+                   StatusVeiculo status,
+                   OffsetDateTime dataCadastro,
+                   OffsetDateTime dataApreensao) {
         this.id = id;
         this.proprietario = proprietario;
         this.marca = marca;
@@ -111,19 +114,19 @@ public class Veiculo {
         this.status = status;
     }
 
-    public LocalDateTime getDataCadastro() {
+    public OffsetDateTime getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(LocalDateTime dataCadastro) {
+    public void setDataCadastro(OffsetDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 
-    public LocalDateTime getDataApreensao() {
+    public OffsetDateTime getDataApreensao() {
         return dataApreensao;
     }
 
-    public void setDataApreensao(LocalDateTime dataApreensao) {
+    public void setDataApreensao(OffsetDateTime dataApreensao) {
         this.dataApreensao = dataApreensao;
     }
 

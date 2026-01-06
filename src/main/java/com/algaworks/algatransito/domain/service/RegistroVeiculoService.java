@@ -8,9 +8,11 @@ import com.algaworks.algatransito.domain.model.Veiculo;
 import com.algaworks.algatransito.domain.repository.ProprietarioRepository;
 import com.algaworks.algatransito.domain.repository.VeiculoRepository;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Service
 public class RegistroVeiculoService {
@@ -19,10 +21,12 @@ public class RegistroVeiculoService {
     private final ProprietarioRepository proprietarioRepository;
     private final RegistroProprietarioService registroProprietarioService;
 
-    public RegistroVeiculoService(VeiculoRepository veiculoRepository, ProprietarioRepository proprietarioRepository, RegistroProprietarioService registroProprietarioService) {
+
+    public RegistroVeiculoService(VeiculoRepository veiculoRepository, ProprietarioRepository proprietarioRepository, RegistroProprietarioService registroProprietarioService, ModelMapper modelMapper) {
         this.veiculoRepository = veiculoRepository;
         this.proprietarioRepository = proprietarioRepository;
         this.registroProprietarioService = registroProprietarioService;
+
     }
 
     @Transactional
@@ -43,7 +47,7 @@ public class RegistroVeiculoService {
 
         novoVeiculo.setProprietario(proprietario);
         novoVeiculo.setStatus(StatusVeiculo.REGULAR);
-        novoVeiculo.setDataCadastro(LocalDateTime.now());
+        novoVeiculo.setDataCadastro(OffsetDateTime.now());
 
         return veiculoRepository.save(novoVeiculo);
     }
